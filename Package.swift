@@ -1,8 +1,27 @@
-// swift-tools-version: 6.1
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
+// swift-tools-version:5.7
 import PackageDescription
 
 let package = Package(
-    name: "TrackableScrollView"
+    name: "TrackableScrollView",
+    platforms: [
+        .iOS(.v13) // SwiftUI 지원 시작 버전
+    ],
+    products: [
+        .library(
+            name: "TrackableScrollView",
+            targets: ["TrackableScrollView"]
+        ),
+    ],
+    targets: [
+        .target(
+            name: "TrackableScrollView",
+            dependencies: [],
+            path: "Sources"
+        ),
+        .testTarget(
+            name: "TrackableScrollViewTests",
+            dependencies: ["TrackableScrollView"],
+            path: "Tests"
+        ),
+    ]
 )
