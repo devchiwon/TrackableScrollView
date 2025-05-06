@@ -36,38 +36,46 @@ public struct TrackableScrollView<Content: View>: View {
     }
 
     public var body: some View {
-        ScrollView(axis, showsIndicators: showsIndicators) {
-            GeometryReader { geo in
-                Color.clear
-                    .preference(key: ScrollOffsetPreferenceKey.self, value: geo.frame(in: .named("scroll")).minY)
-            }
-            .frame(height: 0)
-
-            content
-                .background(
-                    GeometryReader { geo -> Color in
-                        DispatchQueue.main.async {
-                            self.contentHeight = geo.size.height
-                        }
-                        return Color.clear
+        ScrollViewReader { proxy in
+            ScrollView(axis, showsIndicators: showsIndicators) {
+                VStack(spacing: 0) {
+                    GeometryReader { geo in
+                        Color.clear
+                            .preference(key: ScrollOffsetPreferenceKey.self, value: geo.frame(in: .named("scroll")).minY)
+                            .onChange(of: geo.frame(in: .named("scroll")).minY) { newValue in
+                                DispatchQueue.main.async {
+                                    self.scrollOffset = newValue
+                                    self.onScroll(newValue)
+                                    
+                                    let remainingDistance = contentHeight - (scrollViewHeight + abs(newValue))
+                                    if remainingDistance <= bottomThreshold {
+                                        self.onReachBottom()
+                                    }
+                                }
+                            }
                     }
-                )
-        }
-        .coordinateSpace(name: "scroll")
-        .background(
-            GeometryReader { geo -> Color in
-                DispatchQueue.main.async {
-                    self.scrollViewHeight = geo.size.height
+                    .frame(height: 0)
+
+                    content
+                        .background(
+                            GeometryReader { geo -> Color in
+                                DispatchQueue.main.async {
+                                    self.contentHeight = geo.size.height
+                                }
+                                return Color.clear
+                            }
+                        )
                 }
-                return Color.clear
             }
-        )
-        .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
-            self.scrollOffset = value
-            self.onScroll(value)
-            if contentHeight - (scrollViewHeight + abs(value)) <= bottomThreshold {
-                self.onReachBottom()
-            }
+            .coordinateSpace(name: "scroll")
+            .background(
+                GeometryReader { geo -> Color in
+                    DispatchQueue.main.async {
+                        self.scrollViewHeight = geo.size.height
+                    }
+                    return Color.clear
+                }
+            )
         }
     }
 }
