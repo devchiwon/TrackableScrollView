@@ -32,7 +32,7 @@ Perfect for infinite scroll, pagination, or scroll analytics.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/devchiwon/TrackableScrollView.git", from: "1.0.0")
+    .package(url: "https://github.com/devchiwon/TrackableScrollView.git", from: "1.0.2")
 ]
 ```
 
