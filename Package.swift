@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "TrackableScrollView",
     platforms: [
-        .iOS(.v13) // SwiftUI 지원 시작 버전
+        .iOS(.v14) // SwiftUI 지원 시작 버전
     ],
     products: [
         .library(
