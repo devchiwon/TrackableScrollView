@@ -46,36 +46,22 @@ public struct TrackableScrollView<Content: View>: View {
                                 DispatchQueue.main.async {
                                     self.scrollOffset = newValue
                                     self.onScroll(newValue)
-                                    
+
                                     let remainingDistance = contentHeight - (scrollViewHeight + abs(newValue))
                                     if remainingDistance <= bottomThreshold {
                                         self.onReachBottom()
                                     }
+                                    contentHeight = geo.size.height
+                                    scrollViewHeight = geo.size.height
                                 }
                             }
                     }
                     .frame(height: 0)
 
                     content
-                        .background(
-                            GeometryReader { geo -> Color in
-                                DispatchQueue.main.async {
-                                    self.contentHeight = geo.size.height
-                                }
-                                return Color.clear
-                            }
-                        )
                 }
             }
             .coordinateSpace(name: "scroll")
-            .background(
-                GeometryReader { geo -> Color in
-                    DispatchQueue.main.async {
-                        self.scrollViewHeight = geo.size.height
-                    }
-                    return Color.clear
-                }
-            )
         }
     }
 }
